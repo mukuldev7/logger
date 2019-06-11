@@ -1,0 +1,72 @@
+"use strict";
+let debugging_enabled = true;
+var console = {};
+if(process.env.NODE_ENV == "prod") debugging_enabled = false;
+
+var log4js = require("log4js");
+log4js.clearAppenders();
+
+log4js.configure({
+    appenders: [
+        {
+            type: 'dateFile',
+            filename: "all_logs.log",
+            pattern: '-yyyy-MM-dd',
+            category: 'all_logs',
+            alwaysIncludePattern: true,
+            compress : true
+        },
+        {
+            type: 'dateFile',
+            filename: "error_logs.log",
+            pattern: '-yyyy-MM-dd',
+            category: 'error_logs',
+            alwaysIncludePattern: true,
+            compress : true
+
+        },
+        {
+            type: 'dateFile',
+            filename: "webhook_logs.log",
+            pattern: '-yyyy-MM-dd',
+            category: 'webhook_logs',
+            alwaysIncludePattern: true,
+            compress : true
+
+        },
+        {
+            type: 'dateFile',
+            filename: "request_logs.log",
+            pattern: '-yyyy-MM-dd',
+            category: 'request_logs',
+            alwaysIncludePattern: true,
+            compress : true
+
+        }
+    ] 
+});
+
+let allLogger = log4js.getLogger("all_logs");
+let errorLogger = log4js.getLogger("error_logs");
+let webhookLogger = log4js.getLogger("webhook_logs");
+let requestLogger = log4js.getLogger("request_logs");
+allLogger.setLevel('INFO');
+errorLogger.setLevel('INFO');
+
+function info(log) {
+    return allLogger.info(JSON.stringify(log,undefined,2));
+}
+function error(log) {
+    return errorLogger.info(JSON.stringify(log,undefined,2));
+}
+function consoleLog(log) {
+    if(debugging_enabled) 
+        console.log(log);
+}
+
+info("all logs error occureed");
+error("error occured ");
+module.exports = {
+    info,
+    error
+}
